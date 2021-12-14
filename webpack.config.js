@@ -1,7 +1,7 @@
 var path = require('path')
 
 var config = {
-  devtool: 'cheap-module-eval-source-map',
+  mode: 'development',
   entry: [
     './src/index'
   ],
@@ -25,7 +25,9 @@ var config = {
     ]
   },
   devServer: {
-    contentBase: './example',
+    static: {
+      directory: './example'
+    },
     hot: true
   }
 }

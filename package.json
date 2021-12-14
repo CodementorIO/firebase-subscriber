@@ -9,7 +9,7 @@
     "lint:fix": "standard --fix --verbose | snazzy",
     "test": "NODE_ENV=test NODE_PATH=. mocha -r test/support.js --compilers js:babel-register --recursive 'test/**/*.test.js' -w",
     "test:ci": "yarn lint && NODE_ENV=test NODE_PATH=. mocha -r test/support.js --compilers js:babel-register --recursive 'test/**/*.test.js'",
-    "start": "webpack-dev-server --history-api-fallback --hot --inline --progress --colors --quiet --port 3009",
+    "start": "webpack serve --history-api-fallback --hot --progress --port 3009",
     "clean": "rimraf dist",
     "release:beta": "yarn run build && release pre beta && yarn publish",
     "release:patch": "yarn run build && release patch && yarn publish",
@@ -49,8 +49,9 @@
     "sinon-chai": "^2.8.0",
     "snazzy": "^8.0.0",
     "standard": "^12.0.1",
-    "webpack": "^3.3.0",
-    "webpack-dev-server": "^3.1.11"
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
   },
   "peerDependencies": {
     "firebase": ">= 7"
