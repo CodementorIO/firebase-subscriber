@@ -73,7 +73,7 @@ export default function (config, {
 
   function getDb () {
     return {
-      ref: ref(getDatabase(app))
+      ref: (path) => ref(getDatabase(app), path)
     }
   }
 
