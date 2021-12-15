@@ -1,7 +1,7 @@
 import Promise from 'es6-promise'
-import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/database'
+import firebase from 'firebase/compat/app'
+import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from 'firebase/auth'
+import 'firebase/compat/database'
 
 export const DEFAULT_APP_NAME = 'default'
 
@@ -43,7 +43,7 @@ export default function (config, {
         }
       }
 
-      firebase.auth(app).onAuthStateChanged((user) => {
+      onAuthStateChanged(getAuth(app), (user) => {
         if (user) {
           onLoginSuccess()
           resolve(getDb())
@@ -77,13 +77,13 @@ export default function (config, {
 
   function authAnonymousConnection () {
     authorizing = true
-    return firebase.auth(app).signInAnonymously()
+    return signInAnonymously(getAuth(app))
   }
 
   function authConnection () {
     authorizing = true
     return getAuthToken().then(authToken => {
-      return firebase.auth(app).signInWithCustomToken(authToken)
+      return signInWithCustomToken(getAuth(app), authToken)
     })
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "firebase-subscriber",
-  "version": "6.0.0",
+  "version": "9.0.0",
   "description": "Firebase wrapper handling auth, re-auth, de-registering, and more",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "lint:fix": "standard --fix --verbose | snazzy",
     "test": "NODE_ENV=test NODE_PATH=. mocha -r test/support.js --compilers js:babel-register --recursive 'test/**/*.test.js' -w",
     "test:ci": "yarn lint && NODE_ENV=test NODE_PATH=. mocha -r test/support.js --compilers js:babel-register --recursive 'test/**/*.test.js'",
-    "start": "webpack-dev-server --history-api-fallback --hot --inline --progress --colors --quiet --port 3009",
+    "start": "webpack serve --history-api-fallback --hot --progress --port 3009",
     "clean": "rimraf dist",
     "release:beta": "yarn run build && release pre beta && yarn publish",
     "release:patch": "yarn run build && release patch && yarn publish",
@@ -40,7 +40,7 @@
     "babel-register": "^6.5.2",
     "bluebird": "^3.3.1",
     "chai": "^3.5.0",
-    "firebase": "7.6.0",
+    "firebase": "^9.6.1",
     "mocha": "^2.4.5",
     "release": "6.1.0",
     "rewire": "^2.5.1",
@@ -49,10 +49,11 @@
     "sinon-chai": "^2.8.0",
     "snazzy": "^8.0.0",
     "standard": "^12.0.1",
-    "webpack": "^3.3.0",
-    "webpack-dev-server": "^3.1.11"
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.6.0"
   },
   "peerDependencies": {
-    "firebase": ">= 7"
+    "firebase": ">= 9"
   }
 }
