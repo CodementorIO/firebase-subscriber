@@ -57,8 +57,6 @@ export default function (config, {
     try {
       return firebase.initializeApp(config, name)
     } catch (e) {
-      console.log('catched')
-      console.error(e)
       return firebase.app(name)
     }
   }
