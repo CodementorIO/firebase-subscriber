@@ -1,6 +1,7 @@
 import Promise from 'es6-promise'
 import firebase from 'firebase/compat/app'
-import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously, initializeAuth, getReactNativePersistence } from 'firebase/auth'
+import { getAuth as getAuthWeb, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from 'firebase/auth'
+import { getAuth as getAuthRN, initializeAuth, getReactNativePersistence } from 'firebase/auth/react-native'
 import 'firebase/compat/database'
 
 let AsyncStorage
@@ -18,11 +19,6 @@ export default function (config, {
   needAuth = true
 } = {}) {
   let app = getFirebaseApp()
-  
-  let auth = AsyncStorage ? initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage),
-  }) : getAuth(app)
-
   let authed = false
   let authorizing = false
 
@@ -55,7 +51,7 @@ export default function (config, {
         }
       }
 
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(getAuth(app), (user) => {
         if (user) {
           onLoginSuccess()
           resolve(getDb())
@@ -70,6 +66,20 @@ export default function (config, {
       return firebase.initializeApp(config, name)
     } catch (e) {
       return firebase.app(name)
+    }
+  }
+
+  function getAuth(app) {
+    if (AsyncStorage) {
+      try {
+        return initializeAuth(app, {
+          persistence: getReactNativePersistence(AsyncStorage),
+        })
+      } catch (e) {
+        return getAuthRN(app)
+      }
+    } else {
+      return getAuthWeb(app)
     }
   }
 
@@ -89,16 +99,13 @@ export default function (config, {
 
   function authAnonymousConnection () {
     authorizing = true
-    return signInAnonymously(auth)
+    return signInAnonymously(getAuth(app))
   }
 
   function authConnection () {
     authorizing = true
     return getAuthToken().then(authToken => {
-      console.log('authToken', authToken)
-      console.log('auth keys', Object.keys(auth))
-      console.log('auth values', Object.keys(values))
-      return signInWithCustomToken(auth, authToken)
+      return signInWithCustomToken(getAuth(app), authToken)
     })
   }
 }
