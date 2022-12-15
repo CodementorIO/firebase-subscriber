@@ -1,7 +1,15 @@
 import Promise from 'es6-promise'
 import firebase from 'firebase/compat/app'
-import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from 'firebase/auth'
+import { getAuth as getAuthWeb, onAuthStateChanged, signInWithCustomToken, signInAnonymously } from 'firebase/auth'
+import { getAuth as getAuthRN, initializeAuth, getReactNativePersistence } from 'firebase/auth/react-native'
 import 'firebase/compat/database'
+
+let AsyncStorage
+try {
+  AsyncStorage = require('@react-native-async-storage/async-storage')
+} catch (e) {
+  AsyncStorage = null
+}
 
 export const DEFAULT_APP_NAME = 'default'
 
@@ -58,6 +66,20 @@ export default function (config, {
       return firebase.initializeApp(config, name)
     } catch (e) {
       return firebase.app(name)
+    }
+  }
+
+  function getAuth(app) {
+    if (AsyncStorage) {
+      try {
+        return initializeAuth(app, {
+          persistence: getReactNativePersistence(AsyncStorage),
+        })
+      } catch (e) {
+        return getAuthRN(app)
+      }
+    } else {
+      return getAuthWeb(app)
     }
   }
 
