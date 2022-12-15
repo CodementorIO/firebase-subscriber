@@ -1,6 +1,6 @@
 import Promise from 'es6-promise'
 import firebase from 'firebase/compat/app'
-import { getAuth as getAuthInWeb, onAuthStateChanged, signInWithCustomToken, signInAnonymously, initializeAuth, getReactNativePersistence } from 'firebase/auth'
+import { getAuth, onAuthStateChanged, signInWithCustomToken, signInAnonymously, initializeAuth, getReactNativePersistence } from 'firebase/auth'
 import 'firebase/compat/database'
 
 let AsyncStorage
@@ -10,15 +10,6 @@ try {
   AsyncStorage = null
 }
 
-const getAuth = AsyncStorage
-  ? (app) => {
-      return initializeAuth(app, {
-        persistence: getReactNativePersistence(AsyncStorage),
-      })
-    }
-  : getAuthInWeb
-
-
 export const DEFAULT_APP_NAME = 'default'
 
 export default function (config, {
@@ -27,6 +18,13 @@ export default function (config, {
   needAuth = true
 } = {}) {
   let app = getFirebaseApp()
+
+  console.log('AsyncStorage', !!AsyncStorage)
+  
+  let auth = AsyncStorage ? initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  }) : getAuth(app)
+
   let authed = false
   let authorizing = false
 
@@ -59,7 +57,7 @@ export default function (config, {
         }
       }
 
-      onAuthStateChanged(getAuth(app), (user) => {
+      onAuthStateChanged(auth, (user) => {
         if (user) {
           onLoginSuccess()
           resolve(getDb())
@@ -93,13 +91,13 @@ export default function (config, {
 
   function authAnonymousConnection () {
     authorizing = true
-    return signInAnonymously(getAuth(app))
+    return signInAnonymously(auth)
   }
 
   function authConnection () {
     authorizing = true
     return getAuthToken().then(authToken => {
-      return signInWithCustomToken(getAuth(app), authToken)
+      return signInWithCustomToken(auth, authToken)
     })
   }
 }
