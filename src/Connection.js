@@ -18,8 +18,6 @@ export default function (config, {
   needAuth = true
 } = {}) {
   let app = getFirebaseApp()
-
-  console.log('AsyncStorage', !!AsyncStorage)
   
   let auth = AsyncStorage ? initializeAuth(app, {
     persistence: getReactNativePersistence(AsyncStorage),
@@ -97,6 +95,9 @@ export default function (config, {
   function authConnection () {
     authorizing = true
     return getAuthToken().then(authToken => {
+      console.log('authToken', authToken)
+      console.log('auth keys', Object.keys(auth))
+      console.log('auth values', Object.keys(values))
       return signInWithCustomToken(auth, authToken)
     })
   }
